@@ -1,0 +1,158 @@
+<!doctype html>
+{{user.username}}
+
+{% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'website/profile_styles.css' %}"/>
+
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>{{ user.username }}</title>
+  <meta name="author" content="Jake Rocheleau">
+  <script type="text/javascript" src="{% static 'website/jquery-1.10.2.min.js' %}"></script>
+</head>
+<body>    
+    <form action="{% url 'website:back_home' %}"
+    name="back_home_form"
+    method="POST">
+    {% csrf_token %}
+        <div id="topbar">
+            <input id="backhome" type="submit" value="   Back Home   ">
+            </div>
+    </form>
+
+
+        <div id="content" class="clearfix">
+          <h1>{{ user.username}}</h1>
+
+            <nav id="profiletabs">
+              <ul class="clearfix">
+                <li><a href="#unread_messages" class="sel">Unread Messages</a></li>
+                <li><a href="#activity">Post Responses</a></li>
+                <li><a href="#settings">Private Messages</a></li>
+              </ul>
+            </nav>
+
+          <section id="unread_messages">
+              
+              <br>
+              {% if unread_response_list %}
+              Comments in your posts:
+             
+            {% for comment in unread_response_list %}
+               <hr>
+              <br>Response to Post:
+            <a href="/website/{{ comment.post_id}}/0/">{{comment.post_title}}</a>
+            <br>
+              Poster
+            <a href="/website/{{comment.user_id}}/0/profile/">{{comment.poster_username}}</a>:
+            <br>
+            Upvotes:{{comment.upvotes}}
+              <br>
+              <br>
+            {{comment.text|linebreaks}}
+            {{comment.comm_date}}
+            
+            <br>
+            <br>
+
+            {% endfor %}
+            {% endif %}
+            
+              {% if unread_message_list %}
+               Private messages to you:
+              <hr>
+              {% for message in unread_message_list %}
+              <br>  
+              Sender: <a href="/website/{{ message.sender_user_id}}/profile">{{message.sender_user_username}}</a>
+              <br>
+              Subject: {{message.subject}}
+              <br>
+              <br>
+              {{message.text|linebreaks}}
+              {{message.mess_date}}
+            <hr>
+              {% endfor %}
+              {% endif %}
+              
+              
+        </section>
+            
+        <section id="activity" class="hidden">
+            {% if response_list %}
+
+            {% for comment in response_list_final %}
+            Post:<a href="/website/{{ comment.post_id}}/0">{{comment.post_title}}</a>
+            <br>
+            Sender: <a href="/website/{{comment.user_id}}/0/profile/">{{comment.poster_username}}</a>
+            <br>
+            Upvotes:{{comment.upvotes}}
+            <br>
+            <br>
+            {{comment.text|linebreaks}}
+            {{comment.comm_date}}
+            <hr>
+        {% endfor %}
+            
+                      {% if load_responses_button %}
+                    <form action="{% url 'website:message_box' comment_page=comment_page %}"
+                    name="load_comments"
+                    method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="   Load more Responses   " name="load_button">
+                    </form>
+                    {% endif %}
+            
+            
+         {% endif %}
+      </section>
+            
+        <section id="settings" class="hidden">
+        
+            {% if message_list %}
+            {% for message in message_list %}
+            <br>
+            Sender: <a href="/website/{{message.sender_user_id}}/0/profile/">{{message.sender_user_username}}</a>
+            <br>
+            Subject:{{message.subject}}
+            <br>
+            <br>
+            {{message.text|linebreaks}}
+            {{message.mess_date}}
+            <hr>
+            {% endfor %}
+            {% endif %}
+          
+                        {% if load_messages_button %}
+                    <form action="{% url 'website:message_box' comment_page=comment_page %}"
+                    name="load_comments"
+                    method="POST">
+                    {% csrf_token %}
+                    <a href="/website/{{post.id}}/{{comment_page}}/"><input type="submit" value="   Load more Messages   " name="load_button"></a>
+                    </form>
+                    {% endif %}
+          
+
+        </section>
+
+             </div><!-- @end #content -->
+<script type="text/javascript">
+    $(function(){
+    $('#profiletabs ul li a').on('click', function(e){
+        e.preventDefault();
+        var newcontent = $(this).attr('href');
+
+        $('#profiletabs ul li a').removeClass('sel');
+        $(this).addClass('sel');
+
+        $('#content section').each(function(){
+        if(!$(this).hasClass('hidden')) {   $(this).addClass('hidden'); }
+        });
+
+        $(newcontent).removeClass('hidden');
+    });
+    });
+</script>
+</body>
+</html>

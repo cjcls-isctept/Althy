@@ -1,0 +1,194 @@
+<!doctype html>
+{% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'website/profile_styles.css' %}"/>
+
+
+    <!--  <h1><a href="/website/profile">{{ user.username}}</a></h1>
+    <div class="vertical-line" />  -->
+
+{% load staticfiles %}
+
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>{{ user.username }}</title>
+    
+  <meta name="author" content="Jake Rocheleau">
+  <script type="text/javascript" src="{% static 'website/jquery-1.10.2.min.js' %}"></script>
+</head>
+<body>    
+    <form action="{% url 'website:back_home' %}"
+    name="back_home_form"
+    method="POST">
+    {% csrf_token %}
+        <div id="topbar">
+            <input id="backhome" type="submit" value="   Back Home   ">
+            </div>
+    </form>
+
+
+
+
+
+        <div id="content" class="clearfix">
+            {% load staticfiles %}
+         
+          <div id="avatar">
+              <h1>{{ user.username}}</h1>
+              <img  src="{{user.avatar.url}}" width="150" height="150" alt="{{user.avatar}}">
+            <p id="messSend"><a  href="/website/{{user.id}}/send_message/">Send {{ user.username }} a message!</a></p></div>
+            
+            <nav id="profiletabs">
+              <ul class="clearfix">
+                <li><a href="#bio" class="sel">Bio</a></li>
+                <li><a href="#comment_activity">Comment Activity</a></li>
+                <li><a href="#post_activity">Post Activity</a></li>
+                <li><a href="#settings">Account Information</a></li>
+              </ul>
+            </nav>
+
+          <section id="bio">
+              <!--<textarea contenteditable="true"> lol</textarea>
+             <input type="submit" value="Save Bio" >-->
+
+              
+
+
+
+
+
+
+        <p>This bio describes <a>{{user.username}}</a> :</p>
+
+        <p>{{user.bio|linebreaks}}</p>
+      </section>
+
+       <section id="post_activity" class="hidden">
+             {% if posts_list %} 
+                    <form action="{% url 'website:others_profile' user_id=user.id comment_page=comment_page %}"
+	               name="form_filtro"
+	               method="POST">
+	               {% csrf_token %}
+                    <p>Order by:
+                    <select name="comment_list_filter">
+                    <option>Newest</option>
+                    <option>Oldest</option>
+                    <option>Most upvoted</option>
+                    <option>Most downvoted</option>
+                    </select>
+                    <input type="submit" value=" Filter ">
+                    </p>
+                    </form>
+          <ul>
+              {% for post in posts_list %}
+              <hr>
+              <li><a href="/website/{{ post.id}}/0">{{post.title }}</a></li>
+              {% if post.video_preview == 1 %}
+                <iframe width="300" height="230"
+                    src="{{post.youtube_url}}">
+                    </iframe>
+              
+                {% elif post.image != 'notFound.png' %}
+                <img src="{{post.image.url}}" alt="{{post.image}}" style="max-width: 200px;max-heigth=200px"/> 
+              {% endif %}
+              <li>Upvotes:{{post.upvotes}}</li>
+              <br>
+                {{post.post_date}}
+              <br> 
+               <div class="vertical-line" /> 
+               {% endfor %}
+           </ul>
+                   {% if load_post_button %}
+                    <form action="{% url 'website:others_profile' user_id=user_id comment_page=comment_page %}"
+                    name="load_comments"
+                    method="POST">
+                    {% csrf_token %}
+                <a href="/website/{{post.id}}/{{comment_page}}/"><input type="submit" value="   Load more Posts   " name="load_button"></a>
+                    </form>
+                    {% endif %}
+             
+             {% else %}
+	           <p>This user hasn't made any Posts.</p>
+                
+            {% endif %}   
+
+        
+      </section>
+        
+            <section id="comment_activity" class="hidden">
+
+             {% if comments_list %} 
+                    <form action="{% url 'website:others_profile' user_id=user.id comment_page=comment_page %}"
+	               name="form_filtro"
+	               method="POST">
+	               {% csrf_token %}
+                    <p>Order by:
+                    <select name="comment_list_filter">
+                    <option>Newest</option>
+                    <option>Oldest</option>
+                    <option>Most upvoted</option>
+                    <option>Most downvoted</option>
+                    </select>
+                    <input type="submit" value=" Filter ">
+                    </p>
+                    </form>
+          <ul>
+              {% for comment in comments_list %}
+            <hr>
+                <li>Upvotes:{{ comment.upvotes }}</li>  
+                <li><a href="/website/{{ comment.post_id}}/0">{{ comment.text }}</a></li>
+               <br>
+              {{comment.comm_date}}
+               {% endfor %}
+              
+                    {% if load_button %}
+                    <form action="{% url 'website:others_profile' user_id=user_id comment_page=comment_page %}"
+                    name="load_comments"
+                    method="POST">
+                    {% csrf_token %}
+                    <a href="/website/{{post.id}}/{{comment_page}}/"><input type="submit" value="   Load more comments   " name="load_button"></a>
+                    </form>
+              {% endif %}
+           </ul>
+             
+             {% else %}
+	           <p>This user hasn't made any comments.</p>
+                
+            {% endif %}   
+
+        
+      </section>
+
+
+      <section id="settings" class="hidden">
+        <p class="setting"><span>Username </span> {{ user.username }}</p>
+
+        <p class="setting"><span>E-mail Address </span> {{ user.email }}</p>
+
+        <p id="edit" class="setting"><span>Total Posts </span> {{posts_list|length}}</p>  
+        <p class="setting"><span>Total de comments</span>{{comments_list|length}}</p>
+          
+          
+
+        </section>
+        </div><!-- @end #content -->
+        <script type="text/javascript">
+        $(function(){
+            $('#profiletabs ul li a').on('click', function(e){
+            e.preventDefault();
+            var newcontent = $(this).attr('href');
+
+            $('#profiletabs ul li a').removeClass('sel');
+            $(this).addClass('sel');
+
+            $('#content section').each(function(){
+            if(!$(this).hasClass('hidden')) {   $(this).addClass('hidden'); }
+            });
+
+        $(newcontent).removeClass('hidden');
+    });
+    });
+</script>
+</body>
+</html>

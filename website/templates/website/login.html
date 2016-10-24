@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+      <head>
+    <meta charset="UTF-8">
+    <title>Login</title>  
+        {% load staticfiles %}
+          <link rel="stylesheet" type="text/css"
+              href="{% static 'website/style.css' %}" />
+
+  </head>
+<body>
+    
+     <div class="logo">
+                  <h1><a href="/website/">Althy</a></h1>
+     </div>
+    
+    <div class="login">
+        <h1>Login</h1>
+    <form action="{% url 'website:login' %}"
+      name="form_registo_user"
+      method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" size="25" placeholder="Username" required="required" />
+       
+        <input type="password" name="password" placeholder="Password" size="25"  required="required" >
+        
+        <input type="submit" value="Log in" class="btn btn-primary btn-block btn-large">
+    </form>
+        <h2 id="header2login">Don't have an account? <a class="a" href = "/website/registo_user/" style="text-decoration: none">Sign up</a></h2>
+        </div>
+   
+    
+</body> 
+    
+
+
+</html>

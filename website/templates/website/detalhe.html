@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+{% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'website/detalhe_style.css' %}"/>
+        {% load staticfiles %}
+    <link rel="stylesheet" type="text/javascript" href="{% static 'website/jquery-1.10.2.min.js' %}"/>
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+        {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'website/downvote_post.js' %}" ></script>
+                {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'website/vote_comments.js' %}" ></script>
+            
+    <script>
+    function addTextBox(item){
+        var element = document.createElement("textarea");
+        element.setAttribute("type","text");
+        element.setAttribute("name","written_text");
+        var button= document.createElement("button");
+        button.setAttribute("value", "confirm")
+        a=document.getElementById("reply")
+        item.disabled=true;
+        var div = document
+        div.appendChild(element);
+        div.appendChild(button);
+    }
+    </script>
+</head>
+
+
+<body>
+    
+<form action="{% url 'website:back_home' %}"
+    name="back_home_form"
+    method="POST">
+    {% csrf_token %}
+        <div id="topbar" >
+            <input id="backhome" type="submit" value="   Back Home   ">
+            </div>
+    </form>
+
+    
+<div class="content">    
+    
+    <div class="post">
+        <h1 id="titulo"> {{post.title}}</h1>
+           <div class="user">By <a href="/website/{{ post.user_id }}/0/profile">{{ poster.username }}</a></div> 
+          
+        <!--textarea rows="8" cols="100" disabled="true">{{post.text}}</textarea-->
+        <div class="texto_box"> {{post.text|linebreaks}} </div>
+       
+        
+        {% if postWithImage %}
+            <br>
+            <img  class="imagem" src="{{post.image.url}}" alt="{{post.image}}" >
+        {% endif %}
+         {% if youtube_url %}
+            <iframe class="video" width="500" height="350" src="{{post.youtube_url}}"> </iframe>
+        {% endif %} 
+    
+        <div class="buttons_box">
+                        
+                        {% if id %}
+                          {% if post.was_upvoted == 0 %}
+                            <input type="submit" id="upvote" class="upvote_post" data-catid="{{post.id}}" value="   ">
+                        {% endif %}
+                        {% if post.was_upvoted == 1 %}
+                            <input type="submit" id="upvote" class="upvote_post_on" data-catid="{{post.id}}" value="   ">
+                         {% endif %}
+                        {% endif %}
+                         <span id="count" class="countpost"> {{ post.upvotes }} </span>
+                        
+                        
+                        {% if id %}
+                        {% if post.was_downvoted == 0 %}
+                            <input  data-catid="{{post.id}}" id="downvote" class="downvote_post" type="submit" value="   ">
+                        {% endif %}
+                        {% if post.was_downvoted == 1 %}
+                            <input  data-catid="{{post.id}}" id="downvote" class="downvote_post_on" type="submit" value="   ">                            
+                        {% endif %}
+                        {% endif %}
+            
+                        <span style="float:right; margin-right:20px;">{{post.topic}} - {{post.post_date}}</span>
+                            
+                        
+                        {% if id %}
+                        {% if post.user_id == id %}
+                            <a href="/website/{{ post.id }}/0/delete_post/">Delete post</a>
+                        {% endif %}
+                        {% endif %}
+                    
+                    
+                    </div>
+        
+        
+        
+        
+        
+        
+    </div>
+    
+    
+    {% if id %}
+    <div class="comments_container" style="margin-top:20px;">
+        <form action="{% url 'website:submit_comment' post_id=post.id %}" name="form_grava_comment" method="POST">
+            {% csrf_token %}
+            <textarea id="commentwriter"  name="text" placeholder="Write your comment" required></textarea>
+            <br>
+            <input type="submit" value="Post" class="btn btn-primary" style="margin-left: 10px;">
+        </form>
+    </div>
+    
+     {% endif %}
+    
+     {% if comment_list %}
+    
+    
+        <form action="{% url 'website:detalhe' post_id=post.id comment_page=comment_page %}"
+	   name="form_filtro"
+	   method="POST">
+	   {% csrf_token %}
+        <p>Order by:
+            <select name="comment_filter_list">
+                <option>Most Upvoted</option>
+                <option>Most Downvoted  </option>
+                <option>Oldest comments</option>
+                <option>Newest comments</option>
+            </select>
+            <input type="submit" value=" Filter ">
+        </p>
+        </form>
+    
+
+    <div class="comments_container">
+            
+	{% for comment in comment_list %}
+        
+        
+        <div class="comment_div">
+            <div class="user_info">
+                <img  src="{{comment.user.avatar.url}}" width="150" height="150" alt="{{comment.user.avatar}} " class="comm_avatar">
+                          
+            </div>
+            
+            
+            <div class="text_votes">
+                <p  class="comm_username"><a href="/website/{{ comment.user_id }}/0/profile/">{{ comment.user.username}}   </a>    </p>
+                <div class="comentario">{{ comment.text|linebreaks }}</div>
+                
+                <div class="n_votes_delete">
+                     {% if id %}
+                     {% if comment.was_upvoted == 0 %}
+                        <input type="submit" id="upvote" class="upvote_comment" data-catid="{{comment.id}}">
+                     {% endif %}
+                        
+                     {% if comment.was_upvoted == 1 %}
+                        <input type="submit" id="upvote" class="upvote_comment_on" data-catid="{{comment.id}}" >
+                     {% endif %}
+                     {% endif %}
+                    <span id="count" class="count">{{ comment.upvotes }}</span>
+                     {% if id %}
+                    {% if comment.was_downvoted == 0 %}
+                        <input type="submit" id="downvote" class="downvote_comment" data-catid="{{comment.id}}" value="">
+                    {% endif %}
+                    
+                    {% if comment.was_downvoted == 1 %}
+                        <input type="submit" id="downvote" class="downvote_comment_on" data-catid="{{comment.id}}" value="">
+                    {% endif %}
+                    <span style="font-size:10px;color:#a7a7a7;padding-top:5px;">{{comment.comm_date}}</span>
+                        {% if comment.user_id == id %}
+                            <a class="delete_comment"href="/website/{{ comment.id }}/{{post.id}}/delete_comment/">Delete comment</a>
+                        {% endif %}
+                    {% endif %}
+                    
+                    
+                    <div id="float:left; width:90%;">
+                        
+                        <form action="{% url 'website:back_home' %}"
+                        name="back_home_form"
+                        method="POST">
+                        {% csrf_token %}
+                        </form>
+                    
+                    </div>
+                </div> 
+            </div>
+        </div>
+	   {% endfor %}
+        
+        
+        
+        
+        
+        
+        {% if load_button %}
+        <form action="{% url 'website:detalhe' post_id=post.id comment_page=comment_page %}"
+              name="load_comments"
+        method="POST">
+        {% csrf_token %}
+            <a href="/website/{{post.id}}/{{comment_page}}/"><input id="load" class="btn btn-primary load"type="submit" value="   Load more comments   " name="load_button"></a>
+
+        </form>
+        {% endif %}
+        
+        </div>
+    
+    {% else %}
+	   <p style="font-size:20px;">No comments available</p>
+    {% endif %}
+    </div>
+    </body>
+    </html>

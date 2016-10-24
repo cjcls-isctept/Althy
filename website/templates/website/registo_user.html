@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'website/style.css' %}"/>
+        <meta charset="UTF-8">
+        <title>Login Form</title> 
+          
+    </head>
+
+    <body>
+    
+    
+    
+    <div class="logo">
+        <h1><a href="/website/">Althy</a></h1>
+    </div>   
+    
+    <div class="login">    
+        <h1>Sign up</h1>
+        <form id="reg_form" action="{% url 'website:grava_registo_user' %}" name="form_registo_user" method="POST" >
+            {% csrf_token %}
+            <input type="text" name="username" size="25" placeholder="Username" required="required" />
+   
+            <input type="password" name="password" placeholder="Password" required="required" />
+    
+            <input type="password" name="passwordConfirmation" placeholder="Confirm password" size="25" required="required">
+        
+            <input type="email" name="email" size="50" placeholder="Email" required="required"/>
+    
+            <input type="submit" value="Sign up" class="btn btn-primary btn-block btn-large">
+        </form>
+        <h2 id="header2login">Already have an account? <a class="a" href = "/website/show_login/" style="text-decoration: none">Log in</a></h2>
+    
+    
+        
+        
+        {% if username_ja_existente %}
+             <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+                <div  class="alert alert-warning">
+                    <a id="conteudo" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Wooow!</strong>, that username already exists!
+                </div>
+            </div>
+        
+        
+        {% endif %}
+
+        {% if email_ja_existente %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+                <div  class="alert alert-warning">
+                    <a id="conteudo" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Wooow!</strong>, that email already exists!
+                </div>
+            </div>
+        {% endif %}
+        
+      
+        
+        {% if username_bad_size %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+                <div  class="alert alert-warning">
+                    <a id="conteudo" href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Wooow!</strong>, that username's not within 5-20 characters!
+                </div>
+            </div>
+        {% endif %}    
+        {% if password_bad_size %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+                <div  class="alert alert-warning">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Wooow!</strong>, that password's not within 8-20 characters!
+                </div>
+            </div>
+        {% endif %}
+        {% if password_missmatch %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+                <div  class="alert alert-warning">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Wooow!</strong>, those passwords do not match!
+                </div>
+            </div>
+        {% endif %}
+        {% if email_bad_size %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="{% static 'website/bootstrap_alert.css' %}"/>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+            <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+            <div id="warning" class="container">
+            <div  class="alert alert-warning">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Wooow!</strong>, that e-mail's not within 6-40 characters!
+            </div>
+        </div>
+    {% endif %}
+    </div>
+ </body>
+</html>

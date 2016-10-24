@@ -1,0 +1,79 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'website/message_createpost_style.css' %}"/>
+
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title> New Post </title>
+  
+    
+</head>
+    
+    
+    <form action="{% url 'website:back_home' %}"
+    name="back_home_form"
+    method="POST">
+    {% csrf_token %}
+        <div id="topbar">
+            <div class="logo">
+                  
+            </div>
+            <input id="backhome" type="submit" value="   Back Home   ">
+            </div>
+    </form>
+<body>
+    <div id="main_content">
+        <h4><strong>Create a new post!</strong></h4>
+        
+        <form action="{% url 'website:grava_novo_post' %}"
+            name="form_grava_post"
+            method="POST"
+            enctype="multipart/form-data">
+            {% csrf_token %}
+            
+        <input id="id_field1" type="text" name="Title" size="25" required placeholder="Post Title">
+           
+            <p><textarea id="id_field2" rows="8" cols="50" name="Text" placeholder="Insert Your Text Here"></textarea></p>
+            <p>Topic : 
+            <select id="id_field3" name="Topic">
+                <option value="News">News</option>
+                <option value="Sports">Sports</option>
+                <option value="Games">Games</option>
+                <option value="Funny">Funny</option>
+                <option value="Other">Other</option>
+                </select></p>
+            
+            <div ><p>Thumbnail : <label class="custom-file-input"><input class="uploadButton" id="butaozinho" type="file" name="Imagem" > </label></p></div>
+            
+            
+    <input id="id_field6" type="text" name="url" size="40" placeholder="Video Url <Embed>">
+    
+    <br><br>
+        <input id="id_field5" type="submit" value="Save Post">
+
+
+
+</form>
+      
+<script type="text/javascript">
+    $(function(){
+    $('#profiletabs ul li a').on('click', function(e){
+        e.preventDefault();
+        var newcontent = $(this).attr('href');
+
+        $('#profiletabs ul li a').removeClass('sel');
+        $(this).addClass('sel');
+
+        $('#content section').each(function(){
+        if(!$(this).hasClass('hidden')) {   $(this).addClass('hidden'); }
+        });
+
+        $(newcontent).removeClass('hidden');
+    });
+    });
+</script>
+    </div>
+        </body>
+</html>

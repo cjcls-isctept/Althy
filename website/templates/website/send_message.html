@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'website/message_createpost_style.css' %}"/>
+
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title> New Post </title>
+  
+    <form action="{% url 'website:back_home' %}"
+               name="back_home_form"
+               method="POST">
+             {% csrf_token %}
+             <div id="topbar">
+                 <input id="backhome" type="submit" value="   Back Home   ">
+             </div>
+         </form>
+</head>
+  <body>
+      
+     <div id="main_content">
+         <h3 style="font-size:20px;"><strong>Send a Message to <a id="link-po-perfil" href="/website/{{user.id}}/profile/">{{user.username}}</a></strong></h3><br style="font-size:5px;">    
+        
+         <form action="/website/{{user_receiver_id}}/grava_nova_mensagem/"
+      name="form_nova_mensagem"
+      method="POST"
+      enctype="multipart/form-data">
+             {% csrf_token %}
+             
+             <p><input id="id_field1" type="text" name="Subject" size="25" placeholder="Message subject" required></p>
+             
+             <p><textarea id="id_field2" rows="8" cols="50" name="Text" required placeholder="Your message goes here"></textarea></p>
+             
+             <p><input id="id_field5" type="submit" value="Send Message"></p>
+         </form>
+      </div>
+      
+    </body>

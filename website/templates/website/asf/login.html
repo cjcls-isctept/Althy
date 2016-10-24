@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+      <head>
+    <meta charset="UTF-8">
+    <title>Login Form</title>  
+        {% load staticfiles %}
+          <link rel="stylesheet" type="text/css"
+              href="{% static 'website/style.css' %}" />
+
+  </head>
+<body>
+    <div class="login">
+        <h1>Login</h1>
+    <form action="{% url 'website:login' %}"
+      name="form_registo_user"
+      method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" size="25" placeholder="Username" required="required" />
+       
+        <input type="password" name="password" placeholder="Password" size="25"  required="required" >
+        
+        <input type="submit" value="Log in" class="btn btn-primary btn-block btn-large">
+    </form>
+        <h2 id="header2login">Don't have an account yet? Just create one and share your knowledge</h2>
+        </div>
+   
+    
+
+<!--    <form action="{% url 'website:registo_user' %}"
+    	name="form_registo_user"
+	   method="POST">
+	   {% csrf_token %}
+	   <br>
+            <input type="submit" value=" Sign up ">
+      </form>
+
+--> 
+    
+</body> 
+    
+
+
+</html>

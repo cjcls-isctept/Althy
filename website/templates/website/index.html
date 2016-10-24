@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+      <head>
+    <meta charset="UTF-8">
+    <title>HomePage</title> 
+            {% load staticfiles %}
+        <link rel="stylesheet" type="text/css"
+              href="{% static 'website/bootstrap.css' %}" />
+             {% load staticfiles %}
+       <link rel="stylesheet" type="text/css"
+              href="{% static 'website/style_home.css' %}" />
+       
+                  
+          <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+          {% load staticfiles %}
+           <script type="text/javascript" src="{% static 'website/downvote_post.js' %}" ></script>
+         
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  
+          <script type="text/javascript">
+     
+        $('#content').summernote();
+       $('.dropdown-toggle').dropdown();
+    </script>
+   
+        <style>
+                @media (min-width: 1200px) { }
+ 
+                @media (min-width: 768px) and (max-width: 979px) {}
+
+                @media (max-width: 767px) { 
+                    .navmenu{
+                        /*display: none;*/
+                    }
+                    .navmenu li:nth-child(3n){
+                        display: none;
+                    }
+                } 
+                @media (max-width: 630px) { 
+                    .navmenu li:nth-child(2n){
+                        display: none;
+                    }
+                }
+         </style> 
+  
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="logo">
+                  <h1><a href="/website">Althy</a></h1>
+            </div>
+            <div class="buttons" >
+                    {% if not id %}
+                    <form action="{% url 'website:registo_user' %}"	name="form_registo_user" method="POST" class="buttons">
+                    {% csrf_token %}
+                        <input type="submit" value="Sign up" class="btn btn-primary">
+                    </form>
+                
+                    <form action="{% url 'website:show_log_in' %}"	name="form_log_in"	method="POST" class="buttons">
+                    {% csrf_token %}
+	                   <input type="submit" value="Log in" class="btn btn-primary ">
+                    </form>
+                    {% endif %}   
+                
+              
+           {% if id %}
+              
+             <div class="dropdown buttons">
+                   <a class="btn  btn-primary dropdown-toggle"  data-toggle="dropdown" >
+                      {{user.username}}  <span class="caret"></span>
+                   </a>
+                   <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="/website/0/profile">My Profile </a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/website/logout"> Logout </a></li>
+                   </ul>
+              </div>      
+               
+                    {% if unread_comments %}
+                    <form action="{% url 'website:message_box' comment_page=0 %}"	name="message_button"	method="POST" class="buttons">
+                        {% csrf_token %}
+                        <input type="submit" value="You have new messages!" class="btn signup">
+                    </form>
+                    {% elif message_list %}
+                        <form action="{% url 'website:message_box' comment_page=0 %}"	name="message_button"	method="POST" class="buttons">
+                            {% csrf_token %}
+                            <input type="submit" value="You have new messages!" class="btn signup">
+                        </form>
+                
+                    {% else %}
+                        <form action="{% url 'website:message_box' comment_page=0 %}"	name="message_button"	method="POST" class="buttons">
+                        {% csrf_token %}
+                            <input type="submit" value="Message Box" class="btn signup">
+                        </form>
+                    {% endif %}
+                 <form action="{% url 'website:create_post' %}"	name="create_post_form"	method="POST" class="buttons">
+                    {% csrf_token %}
+                    <input type="submit" value="+ New Post" class="btn signup">
+                </form>
+                               
+                {% endif %}
+            </div>
+            <div class="menunav">
+                <ul class="nave" >
+                        <li> <a href="/website">Hot</a></li>
+                        <li> <a class="trending" href="/website/trending/">Trending</a></li>
+                        <li> <a class="new" href="/website/new/">New</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">  
+        
+            {% if latest_post_list %}
+                {% for post in latest_post_list %}
+                <div class= "post">
+                  <div class= "post_content">
+                      
+                    <div class="title">  <a href="/website/{{ post.id }}/0/"> {{ post.title }} </a> </div>
+                    <div class="texto_box"> {{post.preview_text}} </div>
+                    
+                    <div class="imagem">  
+                        <a href="/website/{{ post.id }}/">
+                        {% load staticfiles %}
+                            {% if post.video_preview == 1 %}
+                            <iframe width="420" height="315"
+                                    src="{{post.youtube_url}}">
+                                </iframe>
+                            {% else %}
+                          {% if post.image != 'notFound.png' %}
+                                <img src="{{post.image.url}}" alt="{{post.image}}"/> 
+                          {% endif %}
+                            {% endif %}
+                    </a></div>
+                      
+                      
+                      
+                      
+                    <div class="buttons_box">
+                        
+                        {% if id %}
+                          {% if post.was_upvoted == 0 %}
+                            <input type="submit" id="upvote" class="upvote_post" data-catid="{{post.id}}" value="   ">
+                        {% endif %}
+                        {% if post.was_upvoted == 1 %}
+                            <input type="submit" id="upvote" class="upvote_post_on" data-catid="{{post.id}}" value="   ">
+                         {% endif %}
+                        {% endif %}
+                         <span id="count" class="count"> {{ post.upvotes }} </span>
+                        
+                        
+                        {% if id %}
+                        {% if post.was_downvoted == 0 %}
+                            <input  data-catid="{{post.id}}" id="downvote" class="downvote_post" type="submit" value="   ">
+                        {% endif %}
+                        {% if post.was_downvoted == 1 %}
+                            <input  data-catid="{{post.id}}" id="downvote" class="downvote_post_on" type="submit" value="   ">                            
+                        {% endif %}
+                        {% endif %}
+            
+                        <span style="float:right;">{{post.topic}} - {{post.post_date}}</span>
+                            
+                        
+                        {% if id %}
+                        {% if post.user_id == id %}
+                            <a href="/website/{{ post.id }}/0/delete_post/">Delete post</a>
+                        {% endif %}
+                        {% endif %}
+                    
+                    
+                    </div>
+                    
+                    
+                    </div>
+                    
+                    
+                    
+                </div>
+        
+	           {% endfor %}
+        
+            <div class="next_previous" style="margin-right: 30%;">
+ <nav>            
+  <ul class="pager" >
+   <!--NEXT PREVIOUS -->
+      <!--NEW-->
+    
+      
+      
+      {% if has_previous_new_posts %}
+      <li> <a><form action="{% url 'website:previous_new_page' actual_page=actual_page %}" name="form_filtro_nova_pagina_previous" method="post"> 
+            {% csrf_token %}
+            <input class="page_input" type="submit" value="Previous">   
+      </form></a></li>
+        {% endif %}
+        {% if has_enough_new_posts %}
+        <li> <a > <form action="{% url 'website:next_new_page' actual_page=actual_page %}" name="form_filtro_nova_pagina" method="post"> 
+            {% csrf_token %}
+            <input class="page_input" type="submit" value="Next">    
+          </form> </a> </li> 
+        {% endif %}
+    
+      
+        <!--TRENDING-->    
+        {% if has_previous_trending_posts %}
+      <li><a><form action="{% url 'website:previous_trending_page' actual_page=actual_page %}" name="form_filtro_nova_pagina_previous" method="post"> 
+            {% csrf_token %}
+            <input class="page_input" type="submit" value="Previous">   
+          </form></a></li>
+        {% endif %}   
+       {% if has_enough_trending_posts %}
+      <li> <a><form action="{% url 'website:next_trending_page' actual_page=actual_page %}" name="form_filtro_nova_pagina" method="post"> 
+            {% csrf_token %}
+             <input class="page_input" type="submit" value="Next">   
+          </form></a></li>
+        {% endif %}
+              
+      <!--HOT-->  
+      
+        {% if has_previous_hot_posts %}
+      <li><a><form action="{% url 'website:previous_hot_page' actual_page=actual_page %}" name="form_filtro_nova_pagina_previous" method="post"> 
+            {% csrf_token %}
+            <input class="page_input" type="submit" value="Previous">  
+          </form></a></li>
+        {% endif %}   
+        {% if has_enough_hot_posts %}
+      <li><a> <form action="{% url 'website:next_hot_page' actual_page=actual_page %}" name="form_filtro_nova_pagina" method="post"> 
+            {% csrf_token %}
+             <input class="page_input" type="submit" value="Next">    
+          </form></a></li>
+        {% endif %}
+         
+            
+      </ul>      
+</nav>
+        </div>
+        
+            
+        
+            {% else %}
+	               <p style="font-size:20px;margin-top:8%;">No posts available.</p>
+            {% endif %}
+        
+        
+         <form action="{% url 'website:filtro' %}"
+	name="form_filtro"
+	method="POST">
+	{% csrf_token %}
+        <p>Looking for a specific type of posts?
+            <select name="list">
+            <option>All</option>
+            <option>News  </option>
+            <option>Sports  </option>
+            <option>Games  </option>
+            <option>Funny  </option>
+            <option>Other</option>
+        </select>
+    <input type="submit" value=" Filter ">
+</p>
+</form>
+    </div>
+    
+    
+   
+    
+
+</body>  
+    
+</html>

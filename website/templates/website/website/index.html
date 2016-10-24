@@ -1,0 +1,122 @@
+<form action="{% url 'website:index' %}"
+	name="form_hot_page"
+	method="POST">
+	{% csrf_token %}
+	<br>
+    <input type="submit" value="   Hot   " >
+</form>
+
+<form action="{% url 'website:trending' %}"
+	name="form_trending_page"
+	method="POST">
+	{% csrf_token %}
+        <input type="submit" value="   Trending   ">
+</form>
+
+<form action="{% url 'website:new' %}"
+	name="form_new_page"
+	method="POST">
+	{% csrf_token %}
+        <input type="submit" value="   New   ">
+</form>
+
+{% if latest_post_list %}
+	<ul>
+	{% for post in latest_post_list %}
+        <br>
+        {% load staticfiles %}
+        <img src="{{post.image.url}}"  alt="{{post.image}}"/> 
+        {% if post.was_upvoted == 0 %}
+        <li><a href="/website/{{ post.id }}/upvote_post/"><input type="submit" value="   Upvote   "></a></li>
+        {% endif %}
+        {% if post.was_upvoted == 1 %}
+        <li><a href="/website/{{ post.id }}/upvote_post/"><input type="submit" value="   Remove Upvote   "></a></li>
+        {% endif %}
+        {% if post.was_downvoted == 0 %}
+        <li><a href="/website/{{ post.id }}/downvote_post/"><input type="submit" value="   Downvote   "></a></li>
+        {% endif %}
+        {% if post.was_downvoted == 1 %}
+        <li><a href="/website/{{ post.id }}/downvote_post/"><input type="submit" value="   Remove Downvote   "></a></li>
+        {% endif %}
+ 		{{ post.upvotes }} <div class="vertical-line" />
+        <li><a href="/website/{{ post.id }}/">{{ post.title }}</a></li> {{post.topic}}
+        {% if id %}
+        {% if post.user_id == id %}
+        <li><a href="/website/{{ post.id }}/delete_post/">Delete post</a></li>
+        {% endif %}
+        {% endif %}
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>Nao ha posts disponiveis.</p>
+{% endif %}
+
+<form action="{% url 'website:filtro' %}"
+	name="form_filtro"
+	method="POST">
+	{% csrf_token %}
+        <p>Looking for a specific type of posts?
+    <br>
+    <select name="list">
+    <option>All</option>
+    <option>News  </option>
+    <option>Sports  </option>
+    <option>Games  </option>
+    <option>Funny  </option>    
+    </select>
+    <input type="submit" value=" Filter ">
+</p>
+</form>
+
+
+{% if not id %}
+
+<form action="{% url 'website:registo_user' %}"
+	name="form_registo_user"
+	method="POST">
+	{% csrf_token %}
+	<br>
+        <input type="submit" value="   Sign up   ">
+</form>
+
+
+
+<form action="{% url 'website:show_log_in' %}"
+	name="form_log_in"
+	method="POST">
+	{% csrf_token %}
+	<br>
+        <input type="submit" value=" Log in ">
+</form>
+{% endif %}
+
+{% if id %}
+
+<form action="{% url 'website:profile' %}"
+	name="form_profile"
+	method="POST">
+	{% csrf_token %}
+	<br>
+        <input name={{user.id}} type="submit" value=" Profile ">
+</form>
+
+
+<form action="{% url 'website:logout' %}"
+	name="form_log_out"
+	method="POST">
+	{% csrf_token %}
+	<br>
+        <input type="submit" value=" Logout ">
+</form>
+
+{% endif %}
+
+<form action="{% url 'website:create_post' %}"
+	name="create_post_form"
+	method="POST">
+	{% csrf_token %}
+	<br>
+        <input type="submit" value="   Create a new Post   ">
+</form>
+
+
