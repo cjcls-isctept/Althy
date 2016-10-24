@@ -1,6 +1,8 @@
 # Althy
 Althy Website
 
+A Pseudo-Social Network created in a Network Programmin course, using Python, Java-Script and HTML.
+
 Developed using Python Django
 
 How to run:
